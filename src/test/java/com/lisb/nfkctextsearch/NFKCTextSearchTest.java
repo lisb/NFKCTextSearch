@@ -32,6 +32,14 @@ public class NFKCTextSearchTest {
         final List<Integer> startPositions = new ArrayList<Integer>();
         final StringBuilder builder = new StringBuilder();
 
+        // test empty string
+        NFKCTextSearch.normalize("", builder, startPositions);
+        Assert.assertEquals("", builder.toString());
+        Assert.assertEquals(Collections.emptyList(), startPositions);
+
+        builder.delete(0, builder.length());
+        startPositions.clear();
+
         // ṩ(Source) ṩ(NFD) ṩ(NFC)
         NFKCTextSearch.normalize("\u1e69\u0073\u0323\u0307\u1e69", builder, startPositions);
         Assert.assertEquals("ṩṩṩ", builder.toString());
