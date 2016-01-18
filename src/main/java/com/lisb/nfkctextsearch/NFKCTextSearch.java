@@ -33,10 +33,11 @@ public class NFKCTextSearch {
         while ((index = builder.indexOf(normalizedPattern, position)) != -1) {
             position = index + normalizedPattern.length();
             final Integer start = startPositions.get(index);
+            final Integer prevEnd = startPositions.get(position - 1);
             Integer end = null;
             for (int i = position; i < startPositions.size(); i++) {
                 end = startPositions.get(i);
-                if (start.equals(end)) {
+                if (prevEnd.equals(end)) {
                     end = null;
                 } else {
                     break;

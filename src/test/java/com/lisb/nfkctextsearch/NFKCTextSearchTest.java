@@ -14,17 +14,24 @@ public class NFKCTextSearchTest {
     public void testSearch() throws Exception {
         Assert.assertEquals(Collections.singletonList(new NFKCTextSearch.HitSpan(1, 4)),
                 new NFKCTextSearch("234", false).search("12345"));
+
         Assert.assertEquals(Arrays.asList(new NFKCTextSearch.HitSpan(0, 1), new NFKCTextSearch.HitSpan(1, 2)),
                 new NFKCTextSearch("A", false).search("AＡaａ"));
         Assert.assertEquals(Arrays.asList(new NFKCTextSearch.HitSpan(0, 1), new NFKCTextSearch.HitSpan(1, 2),
                 new NFKCTextSearch.HitSpan(2, 3), new NFKCTextSearch.HitSpan(3, 4)),
                 new NFKCTextSearch("A", true).search("AＡaａ"));
-        Assert.assertEquals(Arrays.asList(new NFKCTextSearch.HitSpan(0, 1), new NFKCTextSearch.HitSpan(1, 2)),
-                new NFKCTextSearch("A", false).search("AＡaａ"));
+        Assert.assertEquals(Arrays.asList(new NFKCTextSearch.HitSpan(0, 2), new NFKCTextSearch.HitSpan(2, 4)),
+                new NFKCTextSearch("AA", true).search("AＡaａ"));
+
         Assert.assertEquals(Arrays.asList(new NFKCTextSearch.HitSpan(1, 2), new NFKCTextSearch.HitSpan(3, 4)),
                 new NFKCTextSearch("キロ", false).search("1㌔2㌔"));
         Assert.assertEquals(Arrays.asList(new NFKCTextSearch.HitSpan(1, 2), new NFKCTextSearch.HitSpan(3, 4)),
                 new NFKCTextSearch("キ", false).search("1㌔2㌔"));
+        Assert.assertEquals(Collections.singletonList(new NFKCTextSearch.HitSpan(0, 2)),
+                new NFKCTextSearch("ロキ", false).search("㌔㌔"));
+
+        Assert.assertEquals(Arrays.asList(new NFKCTextSearch.HitSpan(0, 2), new NFKCTextSearch.HitSpan(4, 6)),
+                new NFKCTextSearch("𠮷", true).search("𠮷野家𠮷野家"));
     }
 
     @Test
@@ -74,6 +81,13 @@ public class NFKCTextSearchTest {
 
         NFKCTextSearch.normalize("\uD867\uDE3Dのひらき", builder, startPositions);
         Assert.assertEquals(Arrays.asList(0, 1, 2, 3, 4, 5), startPositions);
+
+        builder.delete(0, builder.length());
+        startPositions.clear();
+
+        NFKCTextSearch.normalize("𠮷野家𠮷野家", builder, startPositions);
+        Assert.assertEquals(Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7), startPositions);
+        Assert.assertEquals("𠮷野家𠮷野家", builder.toString());
     }
 
 }
