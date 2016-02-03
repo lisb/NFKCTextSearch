@@ -32,6 +32,8 @@ public class NFKCTextSearchTest {
 
         Assert.assertEquals(Arrays.asList(new NFKCTextSearch.HitSpan(0, 2), new NFKCTextSearch.HitSpan(4, 6)),
                 new NFKCTextSearch("𠮷", true).search("𠮷野家𠮷野家"));
+
+        Assert.assertEquals(Collections.emptyList(), new NFKCTextSearch("", true).search("ABCDE"));
     }
 
     @Test
