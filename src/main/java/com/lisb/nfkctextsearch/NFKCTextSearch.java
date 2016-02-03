@@ -2,6 +2,7 @@ package com.lisb.nfkctextsearch;
 
 import java.text.Normalizer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -20,6 +21,10 @@ public class NFKCTextSearch {
     }
 
     public List<HitSpan> search(String text) {
+        if (normalizedPattern.isEmpty()) {
+            return Collections.emptyList();
+        }
+
         final StringBuilder builder = new StringBuilder();
         final List<Integer> startPositions = new ArrayList<Integer>(text.length());
         if (ignoreCase) {
