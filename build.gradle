@@ -1,8 +1,5 @@
-group 'com.lisb'
-version '1.0.0'
-
 apply plugin: 'java'
-apply plugin: 'maven'
+apply plugin: 'maven-publish'
 
 sourceCompatibility = 1.5
 
@@ -11,5 +8,35 @@ repositories {
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.11'
+    testImplementation group: 'junit', name: 'junit', version: '4.13'
+}
+
+def localProps = new Properties()
+localProps.load(file('local.properties').newDataInputStream())
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    archiveClassifier.set('sources')
+    from sourceSets.main.allSource
+}
+
+publishing {
+    repositories {
+        maven {
+            name = 'GitHubPackages'
+            url = 'https://maven.pkg.github.com/lisb/NFKCTextSearch'
+            credentials {
+                username = localProps["gpr.user"] ?: System.getenv("GPR_USER")
+                password = localProps["gpr.key"] ?: System.getenv("GPR_KEY")
+            }
+        }
+    }
+    publications {
+        release(MavenPublication) {
+            from components.java
+            artifact tasks.sourcesJar
+            groupId = 'com.lisb'
+            artifactId = 'nfkc-text-search'
+            version = '1.0.1'
+        }
+    }
 }
